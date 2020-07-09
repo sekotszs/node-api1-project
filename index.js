@@ -78,7 +78,19 @@ server.get("/api/users/:id", (req, res) => {
 });
 
 //DELETE - Removes the user with the specified Id and returns a deleted user
-server.delete("/api/users/:id", (req, res) => {});
+server.delete("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  const deleteThis = users.find((user) => user.id === id); // this finds the value and the id
+
+  //if this id is found
+  if (deleteThis) {
+    users = users.filter((user) => user.id !== id);//this filters it out of the array
+    res.status(200).json({ message: "Get out of here!" });}
+    else{
+        res.status(404).json({errormessage:'Could not find that id'})
+    }
+  }
+);
 
 //PUT - Updates the user with the specified Id using data from thr request body. Returns the modified user.
 server.put("/api/users/:id", (req, res) => {});
