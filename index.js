@@ -45,12 +45,9 @@ server.post("/api/users", (req, res) => {
     users.push(body);
     res.status(201).json(body); //posts to the body
   } else {
-    res
-      .status(500)
-      .json({
-        errormessage:
-          "There was an error while saving the user to the database",
-      });
+    res.status(500).json({
+      errormessage: "There was an error while saving the user to the database",
+    });
   }
 });
 
@@ -67,7 +64,18 @@ server.get("/api/users", (req, res) => {
 });
 
 //GET - Returns the user object with the specified id
-server.get("/api/users/:id", (req, res) => {});
+server.get("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+  const user = users.find((user) => user.id == id); //user with a specified ID
+
+  if (user) {
+    res.status(200).json(user);
+  } else {
+    res
+      .status(404)
+      .json({ errormessage: "The user with the specified ID does not exist" });
+  }
+});
 
 //DELETE - Removes the user with the specified Id and returns a deleted user
 server.delete("/api/users/:id", (req, res) => {});
