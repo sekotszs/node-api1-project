@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 
 //This allows us to generate randomized id's
-const shortid = require('shortid')
+const shortid = require("shortid");
 
 const server = express();
 
@@ -9,60 +9,73 @@ const server = express();
 server.use(express.json());
 
 //Server API
-server.get("/", (req,res) => {
-    res.json({api: 'Node API Project 1'})
-})
+server.get("/", (req, res) => {
+  res.json({ api: "Node API Project 1" });
+});
 
-let users= [
-    {
-    id: "shortid", // hint: use the shortid npm package to generate it
+let users = [
+  {
+    id: 1, // hint: use the shortid npm package to generate it
     name: "Laszlo", // String, required
-    bio: "Is also known Jackie Daytona",  // String, required
-},
-{
-    id: "shortid",
-    name: "Nandor The Relentless", 
-    bio: "Loves glitter and crepe paper" 
-},
-{
-    id: "shortid",
+    bio: "Is also known Jackie Daytona", // String, required
+  },
+  {
+    id: 2,
+    name: "Nandor The Relentless",
+    bio: "Loves glitter and crepe paper",
+  },
+  {
+    id: 3,
     name: "Guillermo",
-    bio: "Loves Interview with a Vampire" 
-}
-]
+    bio: "Loves Interview with a Vampire",
+  },
+];
 
 //POST - Creates a user using the information sent inside the request body
-server.post('/api/users', (req,res) => {
-
-})
+server.post("/api/users", (req, res) => {
+  const body = req.body;
+  //this statement means if the req body is missing the name or bio property.
+  if (!body.name || !body.bio) {
+    res
+      .status(400)
+      .json({ errormessage: "Please provide name and bio for the user" });
+  } else if (body.name && body.bio) {
+    //this line means if there is a body and a bio present
+    body.id = shortid.generate(); //this creates and adds a new unique id to the body
+    users.push(body);
+    res.status(201).json(body); //posts to the body
+  } else {
+    res
+      .status(500)
+      .json({
+        errormessage:
+          "There was an error while saving the user to the database",
+      });
+  }
+});
 
 //GET - Returns an array of users
-server.get('/api/users', (req,res) => {
-    res.json(users);
-    if(!users){
-        res.status(500).json({message: 'The users information could not be retrieved.'})
-    } else{
-    res.status(200).json()}
-})
-
+server.get("/api/users", (req, res) => {
+  res.json(users);
+  if (!users) {
+    res
+      .status(500)
+      .json({ message: "The users information could not be retrieved." });
+  } else {
+    res.status(200).json();
+  }
+});
 
 //GET - Returns the user object with the specified id
-server.get('/api/users/:id', (req,res) => {
-    
-})
+server.get("/api/users/:id", (req, res) => {});
 
 //DELETE - Removes the user with the specified Id and returns a deleted user
-server.delete('/api/users/:id', (req,res) => {
-    
-})
+server.delete("/api/users/:id", (req, res) => {});
 
 //PUT - Updates the user with the specified Id using data from thr request body. Returns the modified user.
-server.put('/api/users/:id', (req,res) => {
-    
-})
-
+server.put("/api/users/:id", (req, res) => {});
 
 const PORT = 5000;
 server.listen(PORT, () => {
-    console.log('running on localhost:', PORT)
-})
+  console.log("running on localhost:", PORT);
+});
