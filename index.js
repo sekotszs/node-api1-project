@@ -84,16 +84,28 @@ server.delete("/api/users/:id", (req, res) => {
 
   //if this id is found
   if (deleteThis) {
-    users = users.filter((user) => user.id !== id);//this filters it out of the array
-    res.status(200).json({ message: "Get out of here!" });}
-    else{
-        res.status(404).json({errormessage:'Could not find that id'})
-    }
+    users = users.filter((user) => user.id !== id); //this filters it out of the array
+    res.status(200).json({ message: "Get out of here!" });
+  } else {
+    res.status(404).json({ errormessage: "Could not find that id" });
   }
-);
+});
 
 //PUT - Updates the user with the specified Id using data from thr request body. Returns the modified user.
-server.put("/api/users/:id", (req, res) => {});
+server.put("/api/users/:id", (req, res) => {
+  //get the id from req.params and get the "patch" body from req.body
+  const { id } = req.params;
+  const changes = req.body;
+
+  //look to see if it is in the array
+  let found = users.find((user) => user.id === id);
+  if (found) {
+    Object.assign(found, changes); //if it is in the array this will change it
+    res.status(200).json(found);
+  } else {
+    res.status(404).json({ errormessage: "User does not exist" });
+  }
+});
 
 const PORT = 5000;
 server.listen(PORT, () => {
